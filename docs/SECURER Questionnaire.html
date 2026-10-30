@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Home Requirements Questionnaire</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --accent: #e74c3c;
+            --light: #ecf0f1;
+            --dark: #34495e;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .progress-bar {
+            height: 8px;
+            background-color: #e0e0e0;
+            border-radius: 4px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+        
+        .progress {
+            height: 100%;
+            background-color: var(--secondary);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        
+        .questionnaire {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .section {
+            margin-bottom: 40px;
+        }
+        
+        .section-title {
+            font-size: 1.4rem;
+            color: var(--primary);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--light);
+        }
+        
+        .question {
+            margin-bottom: 25px;
+        }
+        
+        .question-text {
+            font-weight: 600;
+            margin-bottom: 12px;
+            font-size: 1.1rem;
+        }
+        
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .option {
+            display: flex;
+            align-items: center;
+            padding: 10px 15px;
+            background-color: var(--light);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .option:hover {
+            background-color: #d6dbdf;
+        }
+        
+        .option input {
+            margin-right: 10px;
+        }
+        
+        .checkbox-option {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        
+        .checkbox-option input {
+            margin-right: 10px;
+        }
+        
+        .buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+        
+        button {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        #prevBtn {
+            background-color: var(--light);
+            color: var(--dark);
+        }
+        
+        #prevBtn:hover {
+            background-color: #d6dbdf;
+        }
+        
+        #nextBtn, #submitBtn {
+            background-color: var(--secondary);
+            color: white;
+        }
+        
+        #nextBtn:hover, #submitBtn:hover {
+            background-color: #2980b9;
+        }
+        
+        #downloadBtn {
+            background-color: var(--accent);
+            color: white;
+            width: 100%;
+            margin-top: 10px;
+        }
+        
+        #downloadBtn:hover {
+            background-color: #c0392b;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .thank-you {
+            text-align: center;
+            padding: 40px 20px;
+        }
+        
+        .thank-you h2 {
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+        
+        .thank-you p {
+            margin-bottom: 25px;
+            font-size: 1.1rem;
+        }
+        
+        @media (max-width: 600px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .questionnaire {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Smart Home Requirements Questionnaire</h1>
+            <p class="subtitle">Help us understand your needs for the perfect smart home system</p>
+        </header>
+        
+        <div class="progress-bar">
+            <div class="progress" id="progress"></div>
+        </div>
+        
+        <form id="questionnaireForm" class="questionnaire">
+            <!-- Section 1: User Goals & Purpose -->
+            <div class="section" id="section1">
+                <h2 class="section-title">Your Goals & Purpose</h2>
+                
+                <div class="question">
+                    <p class="question-text">1. What is the primary reason for installing a smart home system?</p>
+                    <div class="options">
+                        <label class="option">
+                            <input type="radio" name="q1" value="Security & Protection" required> Security & Protection
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q1" value="Convenience & Automation"> Convenience & Automation
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q1" value="Energy Efficiency"> Energy Efficiency
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q1" value="Remote Monitoring for Family/Pets"> Remote Monitoring for Family/Pets
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q1" value="Health & Accessibility"> Health & Accessibility
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q1" value="Entertainment"> Entertainment
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="question">
+                    <p class="question-text">2. What are your top monitoring priorities? (Select up to 3)</p>
+                    <div class="options">
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="q2" value="Family safety (children/elderly)"> Family safety (children/elderly)
+                        </label>
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="q2" value="Property security"> Property security
+                        </label>
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="q2" value="Pet monitoring"> Pet monitoring
+                        </label>
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="q2" value="Environmental (temp, leaks)"> Environmental (temp, leaks)
+                        </label>
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="q2" value="Energy usage"> Energy usage
+                        </label>
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="q2" value="No specific monitoring needs"> No specific monitoring needs
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="question">
+                    <p class="question-text">3. How important are automated routines?</p>
+                    <div class="options">
+                        <label class="option">
+                            <input type="radio" name="q3" value="Essential - want full automation" required> Essential - want full automation
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q3" value="Important - several key automations"> Important - several key automations
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q3" value="Nice to have - basic scheduling"> Nice to have - basic scheduling
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q3" value="Not important"> Not important
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="question">
+                    <p class="question-text">4. What level of remote access do you require?</p>
+                    <div class="options">
+                        <label class="option">
+                            <input type="radio" name="q4" value="Full control from anywhere" required> Full control from anywhere
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q4" value="Limited access when away"> Limited access when away
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q4" value="Local access only"> Local access only
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q4" value="No remote access needed"> No remote access needed
+                        </label>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Section 2: Environment & Users -->
+            <div class="section hidden" id="section2">
+                <h2 class="section-title">Environment & Users</h2>
+                
+                <div class="question">
+                    <p class="question-text">5. What type of property is this for?</p>
+                    <div class="options">
+                        <label class="option">
+                            <input type="radio" name="q5" value="Primary Residence" required> Primary Residence
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q5" value="Vacation Home"> Vacation Home
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q5" value="Rental Property"> Rental Property
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q5" value="Home-Based Business"> Home-Based Business
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="question">
+                    <p class="question-text">6. What is your dwelling size?</p>
+                    <div class="options">
+                        <label class="option">
+                            <input type="radio" name="q6" value="Under 1,500 sq ft" required> Under 1,500 sq ft
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q6" value="1,500 - 3,000 sq ft"> 1,500 - 3,000 sq ft
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q6" value="Over 3,000 sq ft"> Over 3,000 sq ft
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="question">
+                    <p class="question-text">7. Who are the primary users?</p>
+                    <div class="options">
+                        <label class="option">
+                            <input type="radio" name="q7" value="Single adult/Couple" required> Single adult/Couple
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q7" value="Family with children"> Family with children
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q7" value="Multi-generational household"> Multi-generational household
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q7" value="Includes elderly/disabled residents"> Includes elderly/disabled residents
+                        </label>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Section 3: Security Requirements -->
+            <div class="section hidden" id="section3">
+                <h2 class="section-title">Security Requirements</h2>
+                
+                <div class="question">
+                    <p class="question-text">8. What are your top security concerns? (Select up to 3)</p>
+                    <div class="options">
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="q8" value="Unauthorized device access"> Unauthorized device access
+                        </label>
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="q8" value="Data privacy"> Data privacy
+                        </label>
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="q8" value="Network security"> Network security
+                        </label>
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="q8" value="Physical tampering"> Physical tampering
+                        </label>
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="q8" value="System reliability"> System reliability
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="question">
+                    <p class="question-text">9. What authentication method do you prefer?</p>
+                    <div class="options">
+                        <label class="option">
+                            <input type="radio" name="q9" value="Password only" required> Password only
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q9" value="Two-Factor Authentication (2FA)"> Two-Factor Authentication (2FA)
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q9" value="Biometric verification"> Biometric verification
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q9" value="No strong preference"> No strong preference
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="question">
+                    <p class="question-text">10. How should user access be managed?</p>
+                    <div class="options">
+                        <label class="option">
+                            <input type="radio" name="q10" value="Single administrator" required> Single administrator
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q10" value="Multiple administrators"> Multiple administrators
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q10" value="Role-based access"> Role-based access
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q10" value="Individual accounts"> Individual accounts
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="question">
+                    <p class="question-text">11. What must work during power/internet outages?</p>
+                    <div class="options">
+                        <label class="option">
+                            <input type="radio" name="q11" value="Door locks" required> Door locks
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q11" value="Security alarms"> Security alarms
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q11" value="Critical notifications"> Critical notifications
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q11" value="Nothing critical"> Nothing critical
+                        </label>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Section 4: Compliance & Trust -->
+            <div class="section hidden" id="section4">
+                <h2 class="section-title">Compliance & Trust</h2>
+                
+                <div class="question">
+                    <p class="question-text">12. How important are privacy certifications?</p>
+                    <div class="options">
+                        <label class="option">
+                            <input type="radio" name="q12" value="Critical - only certified products" required> Critical - only certified products
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q12" value="Important - prefer certified"> Important - prefer certified
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q12" value="Nice to have"> Nice to have
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q12" value="Not important"> Not important
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="question">
+                    <p class="question-text">13. What validation would build trust?</p>
+                    <div class="options">
+                        <label class="option">
+                            <input type="radio" name="q13" value="Independent security audits" required> Independent security audits
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q13" value="Trial period"> Trial period
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q13" value="Manufacturer demonstrations"> Manufacturer demonstrations
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q13" value="User reviews"> User reviews
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q13" value="No specific validation"> No specific validation
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="question">
+                    <p class="question-text">14. What is your minimum expected support lifespan?</p>
+                    <div class="options">
+                        <label class="option">
+                            <input type="radio" name="q14" value="2-3 years" required> 2-3 years
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q14" value="4-5 years"> 4-5 years
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q14" value="6+ years"> 6+ years
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q14" value="No expectation"> No expectation
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="question">
+                    <p class="question-text">15. What would be an immediate deal-breaker? (Select all that apply)</p>
+                    <div class="options">
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="q15" value="Mandatory cloud dependency"> Mandatory cloud dependency
+                        </label>
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="q15" value="Poor privacy policy"> Poor privacy policy
+                        </label>
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="q15" value="History of security breaches"> History of security breaches
+                        </label>
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="q15" value="Lack of software updates"> Lack of software updates
+                        </label>
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="q15" value="Cost exceeding budget"> Cost exceeding budget
+                        </label>
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="q15" value="No specific deal-breakers"> No specific deal-breakers
+                        </label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="buttons">
+                <button type="button" id="prevBtn" class="hidden">Previous</button>
+                <button type="button" id="nextBtn">Next</button>
+                <button type="button" id="submitBtn" class="hidden">Submit</button>
+            </div>
+        </form>
+        
+        <div id="thankYou" class="thank-you hidden">
+            <h2>Thank You!</h2>
+            <p>Your responses have been recorded. You can now download a PDF copy of your questionnaire.</p>
+            <button id="downloadBtn">Download PDF</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const sections = document.querySelectorAll('.section');
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            const submitBtn = document.getElementById('submitBtn');
+            const downloadBtn = document.getElementById('downloadBtn');
+            const progressBar = document.getElementById('progress');
+            const thankYou = document.getElementById('thankYou');
+            const questionnaireForm = document.getElementById('questionnaireForm');
+            
+            let currentSection = 0;
+            
+            // Initialize progress bar
+            updateProgress();
+            
+            // Next button click handler
+            nextBtn.addEventListener('click', function() {
+                if (validateSection(currentSection)) {
+                    if (currentSection < sections.length - 1) {
+                        sections[currentSection].classList.add('hidden');
+                        currentSection++;
+                        sections[currentSection].classList.remove('hidden');
+                        updateButtons();
+                        updateProgress();
+                    }
+                } else {
+                    alert('Please answer all required questions before proceeding.');
+                }
+            });
+            
+            // Previous button click handler
+            prevBtn.addEventListener('click', function() {
+                sections[currentSection].classList.add('hidden');
+                currentSection--;
+                sections[currentSection].classList.remove('hidden');
+                updateButtons();
+                updateProgress();
+            });
+            
+            // Submit button click handler
+            submitBtn.addEventListener('click', function() {
+                if (validateSection(currentSection)) {
+                    questionnaireForm.classList.add('hidden');
+                    thankYou.classList.remove('hidden');
+                } else {
+                    alert('Please answer all required questions before submitting.');
+                }
+            });
+            
+            // Download PDF button click handler
+            downloadBtn.addEventListener('click', function() {
+                generatePDF();
+            });
+            
+            // Update button visibility based on current section
+            function updateButtons() {
+                if (currentSection === 0) {
+                    prevBtn.classList.add('hidden');
+                } else {
+                    prevBtn.classList.remove('hidden');
+                }
+                
+                if (currentSection === sections.length - 1) {
+                    nextBtn.classList.add('hidden');
+                    submitBtn.classList.remove('hidden');
+                } else {
+                    nextBtn.classList.remove('hidden');
+                    submitBtn.classList.add('hidden');
+                }
+            }
+            
+            // Update progress bar
+            function updateProgress() {
+                const progress = ((currentSection + 1) / sections.length) * 100;
+                progressBar.style.width = `${progress}%`;
+            }
+            
+            // Validate current section (check if all required questions are answered)
+            function validateSection(sectionIndex) {
+                const currentSectionElement = sections[sectionIndex];
+                const requiredInputs = currentSectionElement.querySelectorAll('input[required]');
+                
+                for (let input of requiredInputs) {
+                    if (input.type === 'radio') {
+                        const radioGroup = document.getElementsByName(input.name);
+                        let checked = false;
+                        for (let radio of radioGroup) {
+                            if (radio.checked) {
+                                checked = true;
+                                break;
+                            }
+                        }
+                        if (!checked) return false;
+                    } else if (input.type === 'checkbox') {
+                        // For checkboxes with "up to X" limits, we might want different validation
+                        // For now, we'll just check if at least one is checked
+                        const checkboxes = document.getElementsByName(input.name);
+                        let checked = false;
+                        for (let checkbox of checkboxes) {
+                            if (checkbox.checked) {
+                                checked = true;
+                                break;
+                            }
+                        }
+                        if (!checked) return false;
+                    }
+                }
+                
+                return true;
+            }
+            
+            // Generate PDF from form data
+            function generatePDF() {
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF();
+                
+                // Add title
+                doc.setFontSize(20);
+                doc.setTextColor(44, 62, 80);
+                doc.text('Smart Home Requirements Questionnaire', 20, 30);
+                
+                // Add date
+                doc.setFontSize(12);
+                doc.setTextColor(100, 100, 100);
+                doc.text(`Completed on: ${new Date().toLocaleDateString()}`, 20, 45);
+                
+                let yPosition = 65;
+                
+                // Add responses
+                doc.setFontSize(14);
+                doc.setTextColor(44, 62, 80);
+                
+                // Section 1: User Goals & Purpose
+                doc.text('Section 1: Your Goals & Purpose', 20, yPosition);
+                yPosition += 10;
+                
+                // Question 1
+                yPosition = addQuestionToPDF(doc, '1. Primary reason for smart home system:', getRadioValue('q1'), yPosition);
+                
+                // Question 2
+                yPosition = addQuestionToPDF(doc, '2. Top monitoring priorities:', getCheckboxValues('q2'), yPosition);
+                
+                // Question 3
+                yPosition = addQuestionToPDF(doc, '3. Importance of automated routines:', getRadioValue('q3'), yPosition);
+                
+                // Question 4
+                yPosition = addQuestionToPDF(doc, '4. Required remote access level:', getRadioValue('q4'), yPosition);
+                
+                // Section 2: Environment & Users
+                yPosition = checkPageBreak(doc, yPosition, 20);
+                doc.text('Section 2: Environment & Users', 20, yPosition);
+                yPosition += 10;
+                
+                // Question 5
+                yPosition = addQuestionToPDF(doc, '5. Property type:', getRadioValue('q5'), yPosition);
+                
+                // Question 6
+                yPosition = addQuestionToPDF(doc, '6. Dwelling size:', getRadioValue('q6'), yPosition);
+                
+                // Question 7
+                yPosition = addQuestionToPDF(doc, '7. Primary users:', getRadioValue('q7'), yPosition);
+                
+                // Section 3: Security Requirements
+                yPosition = checkPageBreak(doc, yPosition, 20);
+                doc.text('Section 3: Security Requirements', 20, yPosition);
+                yPosition += 10;
+                
+                // Question 8
+                yPosition = addQuestionToPDF(doc, '8. Top security concerns:', getCheckboxValues('q8'), yPosition);
+                
+                // Question 9
+                yPosition = addQuestionToPDF(doc, '9. Preferred authentication method:', getRadioValue('q9'), yPosition);
+                
+                // Question 10
+                yPosition = addQuestionToPDF(doc, '10. User access management:', getRadioValue('q10'), yPosition);
+                
+                // Question 11
+                yPosition = addQuestionToPDF(doc, '11. Critical functions during outages:', getRadioValue('q11'), yPosition);
+                
+                // Section 4: Compliance & Trust
+                yPosition = checkPageBreak(doc, yPosition, 20);
+                doc.text('Section 4: Compliance & Trust', 20, yPosition);
+                yPosition += 10;
+                
+                // Question 12
+                yPosition = addQuestionToPDF(doc, '12. Importance of privacy certifications:', getRadioValue('q12'), yPosition);
+                
+                // Question 13
+                yPosition = addQuestionToPDF(doc, '13. Trust validation methods:', getRadioValue('q13'), yPosition);
+                
+                // Question 14
+                yPosition = addQuestionToPDF(doc, '14. Minimum expected support lifespan:', getRadioValue('q14'), yPosition);
+                
+                // Question 15
+                yPosition = addQuestionToPDF(doc, '15. Deal-breakers:', getCheckboxValues('q15'), yPosition);
+                
+                // Save the PDF
+                doc.save('Smart-Home-Questionnaire-Responses.pdf');
+            }
+            
+            // Helper function to get radio button value
+            function getRadioValue(name) {
+                const radios = document.getElementsByName(name);
+                for (let radio of radios) {
+                    if (radio.checked) {
+                        return radio.value;
+                    }
+                }
+                return 'Not answered';
+            }
+            
+            // Helper function to get checkbox values
+            function getCheckboxValues(name) {
+                const checkboxes = document.getElementsByName(name);
+                const values = [];
+                for (let checkbox of checkboxes) {
+                    if (checkbox.checked) {
+                        values.push(checkbox.value);
+                    }
+                }
+                return values.length > 0 ? values.join(', ') : 'None selected';
+            }
+            
+            // Helper function to add a question to the PDF
+            function addQuestionToPDF(doc, question, answer, yPosition) {
+                yPosition = checkPageBreak(doc, yPosition, 15);
+                
+                doc.setFontSize(11);
+                doc.setFont(undefined, 'bold');
+                doc.text(question, 20, yPosition);
+                yPosition += 7;
+                
+                doc.setFont(undefined, 'normal');
+                const splitAnswer = doc.splitTextToSize(answer, 170);
+                doc.text(splitAnswer, 25, yPosition);
+                yPosition += (splitAnswer.length * 7) + 5;
+                
+                return yPosition;
+            }
+            
+            // Helper function to check if we need a page break
+            function checkPageBreak(doc, yPosition, margin) {
+                if (yPosition > 270) {
+                    doc.addPage();
+                    return 20;
+                }
+                return yPosition;
+            }
+            
+            // Initialize buttons
+            updateButtons();
+        });
+    </script>
+</body>
+</html>
