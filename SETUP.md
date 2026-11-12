@@ -89,14 +89,14 @@ Download from [ollama.ai](https://ollama.ai/download)
 #### Pull a Model
 
 ```bash
-# Recommended model
+# Choose either supported model
 ollama pull llama3.1
-
-# Alternative models
-ollama pull llama3
-ollama pull mistral
-ollama pull mixtral
+ollama pull llama3.2
 ```
+
+Keep `LLM_PROVIDER=ollama` for both models. Set `OLLAMA_MODEL=llama3.1` or `OLLAMA_MODEL=llama3.2:latest` in `.env.local` to choose which model to use.
+
+To use OpenAI instead, set `LLM_PROVIDER=openai` and provide `OPENAI_API_KEY` in `.env.local`. The OpenAI adapter uses `gpt-4o`. Restart the development server after changing environment variables.
 
 #### Verify Ollama is Running
 
@@ -236,7 +236,7 @@ securer/
 ## What's Implemented
 
 ✅ **Core Infrastructure**
-- Next.js 15 with TypeScript
+- Next.js 16 with TypeScript
 - Tailwind CSS styling
 - Supabase database with RLS
 - Environment configuration

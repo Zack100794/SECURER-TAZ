@@ -169,7 +169,7 @@ export async function GET(
       .from('step1_regulation_analysis')
       .select('*')
       .eq('assessment_id', assessmentId)
-      .single();
+      .maybeSingle();
 
     if (error) {
       return NextResponse.json({ error: error.message }, { status: 500 });
