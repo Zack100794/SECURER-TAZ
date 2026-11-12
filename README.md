@@ -12,12 +12,12 @@ Automated cybersecurity compliance assessment for smart home systems. Leverages 
 
 ## 🏗️ Tech Stack
 
-- **Framework**: Next.js 15 (App Router) with TypeScript
+- **Framework**: Next.js 16 (App Router) with TypeScript
 - **Database**: Supabase (PostgreSQL with Row Level Security)
 - **Authentication**: Supabase Auth
 - **LLM Integration**: Unified abstraction layer supporting:
-  - Ollama (local development)
-  - OpenAI GPT-4 (production)
+  - Ollama with Llama 3.1 or Llama 3.2 (local development)
+  - OpenAI GPT-4o
 - **Styling**: Tailwind CSS
 - **Forms**: React Hook Form + Zod validation
 - **File Processing**: Cheerio, PDF-lib, Mammoth
@@ -49,13 +49,7 @@ npm install
 
 ### 3. Configure Environment Variables
 
-Copy `.env.example` to `.env.local`:
-
-```bash
-cp .env.example .env.local
-```
-
-Update `.env.local` with your credentials:
+Create or update `.env.local` in the project root:
 
 ```env
 # Supabase
@@ -63,27 +57,48 @@ NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
 SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
 
-# For local development (Ollama)
+# Ollama - choose either supported model below
+LLM_PROVIDER=ollama
 OLLAMA_BASE_URL=http://localhost:11434
 OLLAMA_MODEL=llama3.1
-LLM_PROVIDER=ollama
+# Or use Llama 3.2 instead:
+# OLLAMA_MODEL=llama3.2:latest
 
-# For production (OpenAI)
-# OPENAI_API_KEY=your_openai_api_key
+# To use OpenAI instead:
 # LLM_PROVIDER=openai
+# OPENAI_API_KEY=your_openai_api_key
+
+# App
+NEXT_PUBLIC_APP_URL=http://localhost:3000
 ```
 
-### 4. Set Up Local LLM (Optional - for local development)
+Never commit `.env.local` or share your API keys. `LLM_PROVIDER` selects the provider; `OLLAMA_MODEL` selects which Ollama model to run. Use `LLM_PROVIDER=ollama` for either Llama version, and change only `OLLAMA_MODEL` to switch between them. For OpenAI, set `LLM_PROVIDER=openai` and configure a valid `OPENAI_API_KEY`.
+
+### 4. Set Up Local LLM (Ollama)
 
 Install Ollama from [ollama.ai](https://ollama.ai), then:
 
 ```bash
-# Pull a model
+# Pull either or both supported models
 ollama pull llama3.1
+ollama pull llama3.2
 
 # Start Ollama server (usually auto-starts)
 ollama serve
 ```
+
+For Llama 3.1, set `OLLAMA_MODEL=llama3.1` in `.env.local`. For Llama 3.2, set `OLLAMA_MODEL=llama3.2:latest` (or the exact tag shown by `ollama list`). Keep `LLM_PROVIDER=ollama` for both. Restart the Next.js development server after changing environment variables.
+
+### Using OpenAI instead of Ollama
+
+Set these values in `.env.local`:
+
+```env
+LLM_PROVIDER=openai
+OPENAI_API_KEY=your_openai_api_key
+```
+
+The application uses OpenAI's `gpt-4o` model. Do not publish or commit your API key. Restart the development server after changing providers.
 
 ### 5. Upload Questionnaire Data
 
@@ -129,13 +144,13 @@ securer/
 5. **Step 4: Test Case Generation** - Executable test cases created from uploaded code
 6. **Step 5: Vulnerability Analysis** - Test results analyzed, compliance report generated
 
-## 🤖 LLM Provider Auto-Detection
+## 🤖 LLM Provider Configuration
 
-The system automatically selects the appropriate LLM provider:
+Choose the provider explicitly in `.env.local`:
 
-1. **Explicit Configuration**: Use `LLM_PROVIDER` env variable
-2. **Auto-detect (Production)**: If `OPENAI_API_KEY` is set, uses OpenAI
-3. **Auto-detect (Local)**: Falls back to Ollama for local development
+- `LLM_PROVIDER=ollama` uses Ollama at `OLLAMA_BASE_URL` and the model set by `OLLAMA_MODEL`. Both `llama3.1` and `llama3.2:latest` are supported.
+- `LLM_PROVIDER=openai` uses OpenAI `gpt-4o` and requires `OPENAI_API_KEY`.
+- If `LLM_PROVIDER` is empty or omitted, the application defaults to Ollama.
 
 ## 🔒 Security Features
 
@@ -163,7 +178,7 @@ The system automatically selects the appropriate LLM provider:
 
 ### Other Platforms
 
-Compatible with any platform supporting Next.js 15.
+Compatible with platforms supporting Next.js 16.
 
 ## 🛠️ Development
 

@@ -1,4 +1,5 @@
 import { LLMAdapter, LLMMessage, LLMResponse, GenerateOptions } from '../types';
+import { z } from 'zod';
 
 export class OllamaAdapter implements LLMAdapter {
   private baseUrl: string;
@@ -18,6 +19,7 @@ export class OllamaAdapter implements LLMAdapter {
         },
         body: JSON.stringify({
           model: this.model,
+          format: options?.schema ? z.toJSONSchema(options.schema) : undefined,
           messages: messages.map((msg) => ({
             role: msg.role,
             content: msg.content,
@@ -38,19 +40,12 @@ export class OllamaAdapter implements LLMAdapter {
       const data = await response.json();
       const content = data.message?.content || '';
 
-      // Try to parse if schema is provided
       let parsed = undefined;
-      if (options?.schema && content) {
-        try {
-          // Try to extract JSON from the response
-          const jsonMatch = content.match(/\{[\s\S]*\}/);
-          if (jsonMatch) {
-            const jsonData = JSON.parse(jsonMatch[0]);
-            parsed = options.schema.parse(jsonData);
-          }
-        } catch (error) {
-          console.warn('Failed to parse LLM response with schema:', error);
+      if (options?.schema) {
+        if (!content) {
+          throw new Error('Ollama returned an empty structured response');
         }
+        parsed = options.schema.parse(JSON.parse(content));
       }
 
       return {
