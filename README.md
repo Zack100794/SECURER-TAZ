@@ -72,6 +72,25 @@ OLLAMA_MODEL=llama3.1
 NEXT_PUBLIC_APP_URL=http://localhost:3000
 ```
 
+If you are not familiar with Supabase, follow these steps to find the required URL and API keys:
+
+1. Open the [Supabase Dashboard](https://supabase.com/dashboard) and select your project.
+2. Click **Connect** at the top of the page and copy the **Project URL**. Use this value for `NEXT_PUBLIC_SUPABASE_URL`.
+3. Go to **Settings → API Keys** and open the **Legacy API Keys** tab, which may be labelled **Legacy anon, service_role API keys**.
+4. Copy the **anon** key and use it for `NEXT_PUBLIC_SUPABASE_ANON_KEY`.
+5. Reveal and copy the **service_role** key and use it for `SUPABASE_SERVICE_ROLE_KEY`.
+
+Add these values to your project's `.env.local` file:
+
+```dotenv
+NEXT_PUBLIC_SUPABASE_URL=https://your-project-ref.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
+SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
+```
+
+Keep the `service_role` key confidential and use it only on the server. Never prefix it with `NEXT_PUBLIC_` or commit your `.env.local` file to version control.
+
+
 Never commit `.env.local` or share your API keys. `LLM_PROVIDER` selects the provider; `OLLAMA_MODEL` selects which Ollama model to run. Use `LLM_PROVIDER=ollama` for either Llama version, and change only `OLLAMA_MODEL` to switch between them. For OpenAI, set `LLM_PROVIDER=openai` and configure a valid `OPENAI_API_KEY`.
 
 ### 4. Set Up Local LLM (Ollama)
