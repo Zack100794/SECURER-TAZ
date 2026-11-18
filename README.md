@@ -86,12 +86,7 @@ ollama pull llama3.2
 # Start Ollama server (usually auto-starts)
 ollama serve
 ```
-
-<<<<<<< HEAD
-For Llama 3.1 and Llama 3.2 set `OLLAMA_MODEL=llama3.2:latest` in `.env.local`. Keep `LLM_PROVIDER=ollama` for both. Restart the Next.js development server after changing environment variables.
-=======
-For Llama 3.1, set `OLLAMA_MODEL=llama3.1` in `.env.local`. For Llama 3.2, set `OLLAMA_MODEL=llama3.2:latest` (or the exact tag shown by `ollama list`). Keep `LLM_PROVIDER=ollama` for both. Restart the Next.js development server after changing environment variables.
->>>>>>> 1920641472b4e675abe014ba170da2cda17f48b5
+For Llama 3.1 and Llama 3.2 set OLLAMA_MODEL=llama3.2:latest in .env.local. Keep LLM_PROVIDER=ollama for both. Restart the Next.js development server after changing environment variables as per your requirements.
 
 ### Using OpenAI instead of Ollama
 
