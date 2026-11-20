@@ -4,7 +4,7 @@ import * as path from 'path';
 import { createClient } from '@supabase/supabase-js';
 
 // Load environment variables
-require('dotenv').config({ path: '.env.local' });
+require('dotenv').config({ path: '.env.local', override: true });
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
