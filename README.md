@@ -75,8 +75,8 @@ NEXT_PUBLIC_APP_URL=http://localhost:3000
 If you are not familiar with Supabase, follow these steps to find the required URL and API keys:
 
 1. Open the [Supabase Dashboard](https://supabase.com/dashboard) and select your project.
-2. Click **Connect** at the top of the page and copy the **Project URL**. Use this value for `NEXT_PUBLIC_SUPABASE_URL`.
-3. Go to **Settings → API Keys** and open the **Legacy API Keys** tab, which may be labelled **Legacy anon, service_role API keys**.
+2. Click the **Copy** button under the name of your project in the top-left area of the project (under the project name) and copy the **Project URL**. Use this value for `NEXT_PUBLIC_SUPABASE_URL`.
+3. Go to **Project Settings → API Keys** and open the **Legacy API Keys** tab, which may be labelled **Legacy anon, service_role API keys**.
 4. Copy the **anon** key and use it for `NEXT_PUBLIC_SUPABASE_ANON_KEY`.
 5. Reveal and copy the **service_role** key and use it for `SUPABASE_SERVICE_ROLE_KEY`.
 
