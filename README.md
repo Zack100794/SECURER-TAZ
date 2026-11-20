@@ -46,6 +46,8 @@ npm install
    - Navigate to SQL Editor in Supabase Dashboard
    - Execute `supabase/migrations/001_initial_schema.sql`
    - Execute `supabase/migrations/002_rls_policies.sql`
+   - Execute `supabase/migrations/003_grant_permissions.sql`
+
 
 ### 3. Configure Environment Variables
 
