@@ -16,17 +16,18 @@ Automated cybersecurity compliance assessment for smart home systems. Leverages 
 - **Database**: Supabase (PostgreSQL with Row Level Security)
 - **Authentication**: Supabase Auth
 - **LLM Integration**: Unified abstraction layer supporting:
-  - Ollama with Llama 3.1 or Llama 3.2 (local development)
+  - Ollama with Llama 3.1 or Llama 3.2:1b/latest (local development)
   - OpenAI GPT-4o
 - **Styling**: Tailwind CSS
 - **Forms**: React Hook Form + Zod validation
 - **File Processing**: Cheerio, PDF-lib, Mammoth
 
 ## 📋 Prerequisites
-
+- OS Windows (Recommended)
+- Visual Studio (Recommended) 
 - Node.js 18+ and npm
 - Supabase account (free tier works)
-- For local development: Ollama installed
+- For local development: Ollama installed (Desktop version)
 - For production: OpenAI API key
 
 ## 🚀 Getting Started
@@ -35,7 +36,7 @@ Automated cybersecurity compliance assessment for smart home systems. Leverages 
 
 ```bash
 git clone <repository-url>
-cd securer
+cd securer-taz
 npm install
 ```
 
@@ -102,12 +103,20 @@ Install Ollama from [ollama.ai](https://ollama.ai), then:
 ```bash
 # Pull either or both supported models
 ollama pull llama3.1
+ollama pull llama3.2:1b 
 ollama pull llama3.2
+
+
+Note: ollama pull llama3.2:1b recommended for Linux users as CPU utilization and Ollama response time is ideal for this model. The ollama response time can be increased via securer-taz llm/adapters/ollama.ts. For now its 5 minutes and running perefectly for llama 3.1, llama 3.2 and llama3.2:1b via Windows ollama desktop as recommended settings in first place.
 
 # Start Ollama server (usually auto-starts)
 ollama serve
-```
-For Llama 3.1 and Llama 3.2 set OLLAMA_MODEL=llama3.2:latest in .env.local. Keep LLM_PROVIDER=ollama for both. Restart the Next.js development server after changing environment variables as per your requirements.
+
+Note: Its better to check ollama status via OLLAMA_BASE_URL=http://localhost:11434 to make sure ollama is running (desktop version of ollama is recommended). In case of ollama adaptor error or timeout change the ollama model and restart npm run dev.
+
+For Llama 3.1 and Llama 3.2 set OLLAMA_MODEL=llama3.2:latest in .env.local but for llama3.2:1b set OLLAMA_MODEL=llama3.2:1b in .env.local. Keep LLM_PROVIDER=ollama for all above mentioned three models. Restart the Next.js development server after changing environment variables as per your requirements.
+
+Note: While using ollama wrote LLM_PROVIDER=ollama and keep OPENAI_API_KEY=your_openai_api_key as empty or null such as OPENAI_API_KEY= in .env.local`
 
 ### Using OpenAI instead of Ollama
 
@@ -168,7 +177,7 @@ securer/
 
 Choose the provider explicitly in `.env.local`:
 
-- `LLM_PROVIDER=ollama` uses Ollama at `OLLAMA_BASE_URL` and the model set by `OLLAMA_MODEL`. Both `llama3.1` and `llama3.2:latest` are supported.
+- `LLM_PROVIDER=ollama` uses Ollama at `OLLAMA_BASE_URL` and the model set by `OLLAMA_MODEL`. All `llama3.1`, `llama3.2:1b` and `llama3.2:latest` are supported.
 - `LLM_PROVIDER=openai` uses OpenAI `gpt-4o` and requires `OPENAI_API_KEY`.
 - If `LLM_PROVIDER` is empty or omitted, the application defaults to Ollama.
 
