@@ -106,13 +106,14 @@ Install Ollama from [ollama.ai](https://ollama.ai), then:
 ollama pull llama3.1
 ollama pull llama3.2:1b 
 ollama pull llama3.2
-
-
+```
 Note: ollama pull llama3.2:1b recommended for Linux users as CPU utilization and Ollama response time is ideal for this model. The ollama response time can be increased via securer-taz llm/adapters/ollama.ts. For now its 5 minutes and running perefectly for llama 3.1, llama 3.2 and llama3.2:1b via Windows ollama desktop as recommended settings in first place.
 
 # Start Ollama server (usually auto-starts)
-ollama serve
 
+```bash
+ollama serve
+```
 Note: Its better to check ollama status via OLLAMA_BASE_URL=http://localhost:11434 to make sure ollama is running (desktop version of ollama is recommended). In case of ollama adaptor error or timeout change the ollama model and restart npm run dev.
 
 For Llama 3.1 and Llama 3.2 set OLLAMA_MODEL=llama3.2:latest in .env.local but for llama3.2:1b set OLLAMA_MODEL=llama3.2:1b in .env.local. Keep LLM_PROVIDER=ollama for all above mentioned three models. Restart the Next.js development server after changing environment variables as per your requirements.
