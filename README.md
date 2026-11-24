@@ -42,7 +42,7 @@ npm install
 
 ### 2. Set Up Supabase
 
-1. Create a new project at [supabase.com](https://supabase.com)
+1. Create a new project and name it securer (recommended) at [supabase.com](https://supabase.com)
 2. Run the database migrations:
    - Navigate to SQL Editor in Supabase Dashboard
    - Execute `supabase/migrations/001_initial_schema.sql`
@@ -56,22 +56,23 @@ Create or update `.env.local` in the project root:
 
 ```env
 # Supabase
-NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
-SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url_here
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key_here
+SUPABASE_SERVICE_ROLE_KEY=your_service_role_key_here
 
-# Ollama - choose either supported model below
-LLM_PROVIDER=ollama
+# OpenAI (Production)
+OPENAI_API_KEY=
+
+# Ollama (Local Development)
 OLLAMA_BASE_URL=http://localhost:11434
-OLLAMA_MODEL=llama3.1
-# Or use Llama 3.2 instead:
-# OLLAMA_MODEL=llama3.2:latest
+OLLAMA_MODEL=llama3.2:latest
 
-# To use OpenAI instead:
-# LLM_PROVIDER=openai
-# OPENAI_API_KEY=your_openai_api_key
+# LLM Configuration
+# Set to "ollama" for local dev or "openai" for production
+# Leave empty for auto-detection (checks for OpenAI key first)
+LLM_PROVIDER=ollama
 
-# App
+# App Configuration
 NEXT_PUBLIC_APP_URL=http://localhost:3000
 ```
 
